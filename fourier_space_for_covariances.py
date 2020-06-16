@@ -31,7 +31,10 @@ with TaskManager(cpus_per_task=2, use_all_cpus=True) as tm:
 	#for i in range(1000):
 	#	if rank//Ncores_per_task == i:
 	input_path = '/global/project/projectdirs/desi/cosmosim/UNIT-BAO-RSD-challenge/3Gpc/ELG-single-tracer/EZmock/'
-	input_files = glob.glob(input_path + '*.dat')[begin_ind:finish_ind]
+	input_files = glob.glob(input_path + '*.dat')
+	index = list(map(lambda x: float(x.split('/')[10].split('-')[4].split('.dat')[0]),input_files))
+	input_files = np.array(input_files)[np.argsort(index)]
+	input_files = input_files[begin_ind:finish_ind]
 	
 	for input_file in tm.iterate(input_files):
 		rank = input_file.split('/')[-1].split('-')[-1].split('.dat')[0]
